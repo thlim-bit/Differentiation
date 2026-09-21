@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Differentiation Practice</title>
+    <!-- KaTeX CSS for beautiful math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <style>
+        :root {
+            --bg-base: #030712;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent: #ec4899;
+            --success: #10b981;
+            --error: #f43f5e;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fancy Ambient Background Glow Orbs */
+        .bg-glow-1, .bg-glow-2, .bg-glow-3 {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.35;
+        }
+        .bg-glow-1 {
+            width: 450px;
+            height: 450px;
+            background: #4f46e5;
+            top: -100px;
+            left: -100px;
+        }
+        .bg-glow-2 {
+            width: 500px;
+            height: 500px;
+            background: #9333ea;
+            bottom: -150px;
+            right: -100px;
+        }
+        .bg-glow-3 {
+            width: 350px;
+            height: 350px;
+            background: #db2777;
+            top: 40%;
+            left: 30%;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .scope-box {
+            background: rgba(79, 70, 229, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.25);
+            border-left: 5px solid var(--primary);
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            border-radius: 0 14px 14px 0;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(219, 39, 119, 0.5);
+        }
+
+        .question-card {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid var(--card-border);
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-color: rgba(129, 140, 248, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-title {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .math-expr {
+            font-size: 1.35rem;
+            margin: 15px 0;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-top: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(11, 15, 25, 0.9);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.05rem;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25);
+        }
+
+        .solution-box {
+            margin-top: 18px;
+            padding: 18px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+        .correct { color: var(--success); }
+        .incorrect { color: var(--error); }
+        .solution-box.wrong-bg {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: rgba(244, 63, 94, 0.3);
+        }
+
+        .solution-details {
+            margin-top: 8px;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        #submit-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        #score-display {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #34d399, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient background glowing orbs -->
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+    <div class="bg-glow-3"></div>
+
+<div class="container">
+    <header>
+        <h1>Calculus Final Exam Prep</h1>
+        <p style="color: var(--text-muted); margin: 0;">Interactive AI-Scope Differentiation Engine</p>
+    </header>
+
+    <div class="scope-box">
+        <strong>Exam Scope:</strong> Differentiation rules (Basic, Product, Quotient, Chain Rule) applied to algebraic, exponential, and logarithmic expressions.
+    </div>
+
+    <button class="btn" id="generate-btn">⚡ Generate Random Exam Paper</button>
+
+    <div id="quiz-container"></div>
+
+    <div id="submit-section">
+        <div id="score-display"></div>
+        <button class="btn" id="submit-btn" style="background: linear-gradient(135deg, #059669, #10b981);">Submit Answers & View Solutions</button>
+    </div>
+</div>
+
+<script>
+    let currentQuestions = [];
+
+    document.getElementById('generate-btn').addEventListener('click', generateQuestions);
+    document.getElementById('submit-btn').addEventListener('click', evaluateQuiz);
+
+    function generateQuestions() {
+        currentQuestions = [
+            generateBasicPoly(),
+            generateExponential(),
+            generateLogarithmic(),
+            generateProductRule(),
+            generateQuotientRule()
+        ];
+
+        let html = '';
+        currentQuestions.forEach((q, index) => {
+            html += `
+                <div class="question-card" id="q-card-${index}">
+                    <div class="question-title">
+                        <span>Question ${index + 1}</span>
+                        <span class="badge">${q.type}</span>
+                    </div>
+                    <div class="math-expr">${q.promptText}</div>
+                    <div class="input-group">
+                        <label>Your Answer: $f'(x) =$</label>
+                        <input type="text" id="user-ans-${index}" placeholder="${q.hintText}">
+                    </div>
+                    <div class="solution-box" id="sol-box-${index}">
+                        <div class="feedback" id="feedback-${index}"></div>
+                        <div class="solution-details">
+                            <div><strong>Correct Answer:</strong> $f'(x) = ${q.cleanAns}$</div>
+                            <div style="margin-top: 6px;"><strong>Step-by-Step Solution:</strong><br>${q.steps}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('quiz-container').innerHTML = html;
+        document.getElementById('submit-section').style.display = 'block';
+        document.getElementById('score-display').innerHTML = '';
+
+        if (window.renderMathInElement) {
+            renderMathInElement(document.getElementById('quiz-container'), {
+                delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}],
+                throwOnError: false
+            });
+        }
+    }
+
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateBasicPoly() {
+        let a = randInt(2, 6);
+        let n = randInt(3, 5);
+        let c = randInt(1, 4);
+        return {
+            type: "Chain / Power Rule",
+            promptText: `Find the derivative of $f(x) = (${a}x^{${n}} - ${c})^{${n-1}}$`,
+            hintText: `e.g. ${n-1}(${a}x^${n}-${c})^${n-2} * ...`,
+            ans: `${n-1}*(${a}x^${n}-${c})^${n-2}*(${a*n}x^${n-1})`,
+            cleanAns: `${(n-1)*(a*n)}x^{${n-1}}(${a}x^{${n}} - ${c})^{${n-2}}`,
+            steps: `1. Apply generalized power rule (Chain Rule).<br>2. Bring down exponent ${n-1} and reduce inner power to ${n-2}.<br>3. Multiply by inner derivative (${a*n}x^{${n-1}}).`
+        };
+    }
+
+    function generateExponential() {
+        let k = randInt(2, 5);
+        return {
+            type: "Exponential Rule",
+            promptText: `Differentiate $f(x) = e^{${k}x^2}$ with respect to $x$.`,
+            hintText: `e.g. ${2*k}x * e^(${k}x^2)`,
+            ans: `${2*k}x*e^(${k}x^2)`,
+            cleanAns: `${2*k}x \\cdot e^{${k}x^2}`,
+            steps: `1. Derivative of $e^{u}$ is $e^{u} \\cdot u'$.<br>2. Here $u = ${k}x^2$, so $u' = ${2*k}x$.<br>3. Result: ${2*k}x \\cdot e^{${k}x^2}.`
+        };
+    }
+
+    function generateLogarithmic() {
+        let a = randInt(2, 5);
+        return {
+            type: "Logarithmic Rule",
+            promptText: `Determine $f'(x)$ given $f(x) = \\ln(${a}x^3 + 1)$.`,
+            hintText: `e.g. (${3*a}x^2) / (${a}x^3 + 1)`,
+            ans: `[${3*a}x^2 / (${a}x^3 + 1)]`,
+            cleanAns: `\\frac{${3*a}x^2}{${a}x^3 + 1}`,
+            steps: `1. Derivative of $\\ln(u)$ is $\\frac{u'}{u}$.<br>2. $u = ${a}x^3 + 1$, meaning $u' = ${3*a}x^2$.<br>3. Result: $\\frac{${3*a}x^2}{${a}x^3 + 1}$.`
+        };
+    }
+
+    function generateProductRule() {
+        let a = randInt(2, 4);
+        return {
+            type: "Product Rule",
+            promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\cdot e^x$.`,
+            hintText: `e.g. x^${a}*e^x + ...`,
+            ans: `x^${a}*e^x + ${a}x^(${a}-1)*e^x`,
+            cleanAns: `x^{${a}}e^x + ${a}x^{${a-1}}e^x`,
+            steps: `1. Formula: $(uv)' = u'v + uv'$.<br>2. Let $u = x^{${a}}$ ($u' = ${a}x^{${a-1}}$) and $v = e^x$ ($v' = e^x$).<br>3. Combine terms.`
+        };
+    }
+
+    function generateQuotientRule() {
+        let a = randInt(2, 4);
+        return {
+            type: "Quotient Rule",
+            promptText: `Find the derivative of the function $f(x) = \\frac{e^x}{x^{${a}} + 1}$.`,
+            hintText: `e.g. [e^x(x^${a}+1) - ...] / (x^${a}+1)^2`,
+            ans: `[(e^x)*(x^${a}+1) - e^x*(${a}x^(${a}-1))] / (x^${a}+1)^2`,
+            cleanAns: `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${a-1}}e^x}{(x^{${a}} + 1)^2}`,
+            steps: `1. Formula: $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$.<br>2. $u = e^x, v = x^{${a}} + 1$.<br>3. Apply terms and simplify denominator.`
+        };
+    }
+
+    function evaluateQuiz() {
+        let score = 0;
+        currentQuestions.forEach((q, index) => {
+            let userInp = document.getElementById(`user-ans-${index}`).value.replace(/\s+/g, '').toLowerCase();
+            let expected = q.ans.replace(/\s+/g, '').toLowerCase();
+            let alternative = q.cleanAns.replace(/[\s\\]+/g, '').toLowerCase();
+
+            let feedbackEl = document.getElementById(`feedback-${index}`);
+            let solBox = document.getElementById(`sol-box-${index}`);
+            solBox.style.display = 'block';
+
+            let isCorrect = userInp === expected || alternative.includes(userInp) || (userInp.length > 3 && expected.includes(userInp));
+
+            if (isCorrect) {
+                feedbackEl.innerHTML = "✓ Correct!";
+                feedbackEl.className = "feedback correct";
+                solBox.className = "solution-box";
+                score++;
+            } else {
+                feedbackEl.innerHTML = "✗ Incorrect / Review solution below";
+                feedbackEl.className = "feedback incorrect";
+                solBox.className = "solution-box wrong-bg";
+            }
+
+            document.getElementById(`user-ans-${index}`).disabled = true;
+        });
+
+        if (window.renderMathInElement) {
+            renderMathInElement(document.getElementById('quiz-container'), {
+                delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}],
+                throwOnError: false
+            });
+        }
+
+        document.getElementById('score-display').innerHTML = `🎉 You scored ${score} out of ${currentQuestions.length}!`;
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    window.onload = generateQuestions;
+</script>
+
+</body>
+</html>
