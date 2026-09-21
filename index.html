@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculus Final Exam Prep</title>
+    <title>Revision Practice for Differentiation</title>
     <!-- KaTeX CSS for beautiful math rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <!-- KaTeX JS -->
@@ -74,12 +74,12 @@
             background: rgba(79, 70, 229, 0.1);
             border: 1px solid rgba(79, 70, 229, 0.25);
             border-left: 5px solid var(--primary);
-            padding: 16px 20px;
+            padding: 14px 20px;
             font-size: 0.95rem;
             color: #cbd5e1;
             border-radius: 0 14px 14px 0;
             margin-bottom: 28px;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .btn {
@@ -143,36 +143,21 @@
 
         .math-expr { font-size: 1.35rem; margin: 15px 0; color: #ffffff; font-weight: 500; }
 
-        .input-group { margin-top: 15px; }
-        .input-group label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(11, 15, 25, 0.9);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            color: white;
-            font-size: 1.05rem;
-            box-sizing: border-box;
-        }
-        input[type="text"]:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25); }
-
-        .final-ans-box, .eval-box {
+        .eval-box {
             margin-top: 15px;
             padding: 16px;
             border-radius: 10px;
             display: none;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
         }
-        .final-ans-box { background: rgba(30, 41, 59, 0.8); border: 1px solid #475569; }
-        .eval-box { background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.3); }
 
         .step-item {
             display: flex;
             align-items: flex-start;
             gap: 12px;
             margin-top: 10px;
-            padding: 8px;
+            padding: 10px;
             background: rgba(15, 23, 42, 0.5);
             border-radius: 6px;
         }
@@ -182,10 +167,6 @@
             margin-top: 2px;
             cursor: pointer;
         }
-
-        .feedback { font-weight: bold; margin-top: 8px; }
-        .correct { color: var(--success); }
-        .incorrect { color: var(--error); }
 
         #total-score-banner {
             text-align: center;
@@ -208,15 +189,15 @@
 
 <div class="container">
     <header>
-        <h1>Calculus Final Exam Prep</h1>
-        <p style="color: var(--text-muted); margin: 0;">Interactive AI-Scope Differentiation Engine with Self-Evaluation</p>
+        <h1>Revision Practice for Differentiation</h1>
+        <p style="color: var(--text-muted); margin: 0;">Interactive Self-Evaluation Practice Engine</p>
     </header>
 
     <div class="scope-box">
-        <strong>Exam Scope:</strong> Differentiation rules (Basic, Product, Quotient, Chain Rule) applied to algebraic, exponential, and logarithmic expressions. Each question is worth <strong>5 marks</strong> (1 mark for final answer + 4 marks for step-by-step self-evaluation).
+        <strong>Practice Scope:</strong> Core differentiation rules limited strictly to <strong>basic algebra, natural exponential, and natural log</strong>. Each question is worth <strong>5 marks total</strong> (1 mark per step across 4 calculation steps + 1 final answer check).
     </div>
 
-    <button class="btn" id="generate-btn">⚡ Generate Random Exam Paper</button>
+    <button class="btn" id="generate-btn">⚡ Generate Random Practice Set</button>
 
     <div id="quiz-container"></div>
 
@@ -232,7 +213,7 @@
 
     function generateQuestions() {
         currentQuestions = [
-            generateBasicPoly(),
+            generateChainRule(),
             generateExponential(),
             generateLogarithmic(),
             generateProductRule(),
@@ -244,32 +225,27 @@
             html += `
                 <div class="question-card" id="q-card-${index}">
                     <div class="question-title">
-                        <span>Question ${index + 1} (5 Marks)</span>
+                        <span>Question ${index + 1} (5 Marks Total)</span>
                         <span class="badge">${q.type}</span>
                     </div>
                     <div class="math-expr">${q.promptText}</div>
-                    <div class="input-group">
-                        <label>Your Answer: $f'(x) =$</label>
-                        <input type="text" id="user-ans-${index}" placeholder="${q.hintText}">
-                    </div>
                     
-                    <button class="btn-small" onclick="checkFinalAnswer(${index})">Check Final Answer (1 Mark)</button>
-                    
-                    <div class="final-ans-box" id="final-box-${index}">
-                        <div class="feedback" id="feedback-${index}"></div>
-                        <div><strong>Correct Final Answer:</strong> $f'(x) = ${q.cleanAns}$</div>
-                    </div>
-
-                    <button class="btn-small btn-eval" id="eval-btn-${index}" style="display:none;" onclick="openEvaluation(${index})">Self-Evaluation & Step-by-Step AI Solution (4 Marks)</button>
+                    <button class="btn-small btn-eval" id="eval-btn-${index}" onclick="openEvaluation(${index})">View Step-by-Step Working & Self-Evaluation</button>
 
                     <div class="eval-box" id="eval-box-${index}">
-                        <h4 style="margin-top:0; color:#c084fc;">Step-by-Step AI Rubric (Check steps you completed correctly):</h4>
+                        <h4 style="margin-top:0; color:#c084fc;">Self-Evaluation Checkboxes (1 Mark per correct step/answer):</h4>
+                        
                         ${q.steps.map((stepText, sIdx) => `
                             <div class="step-item">
                                 <input type="checkbox" class="step-check-${index}" id="step-${index}-${sIdx}" onchange="updateScore()">
-                                <div><label for="step-${index}-${sIdx}"><strong>Step ${sIdx+1} (1 Mark):</strong>${stepText}</label></div>
+                                <div><label for="step-${index}-${sIdx}"><strong>Step ${sIdx+1}:</strong>$${stepText}$</label></div>
                             </div>
                         `).join('')}
+
+                        <div class="step-item" style="border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);">
+                            <input type="checkbox" class="step-check-${index}" id="step-${index}-4" onchange="updateScore()">
+                            <div><label for="step-${index}-4"><strong>Final Answer:</strong> $f'(x) = ${q.cleanAns}$</label></div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -287,48 +263,18 @@
         }
     }
 
-    function checkFinalAnswer(index) {
-        let q = currentQuestions[index];
-        let userInp = document.getElementById(`user-ans-${index}`).value.replace(/\s+/g, '').toLowerCase();
-        let expected = q.ans.replace(/\s+/g, '').toLowerCase();
-        let alternative = q.cleanAns.replace(/[\s\\]+/g, '').toLowerCase();
-
-        let feedbackEl = document.getElementById(`feedback-${index}`);
-        let finalBox = document.getElementById(`final-box-${index}`);
-        finalBox.style.display = 'block';
-
-        let isCorrect = userInp === expected || alternative.includes(userInp) || (userInp.length > 3 && expected.includes(userInp));
-
-        if (isCorrect) {
-            feedbackEl.innerHTML = "✓ Final Answer Correct! (+1 Mark)";
-            feedbackEl.className = "feedback correct";
-            q.finalMark = 1;
-        } else {
-            feedbackEl.innerHTML = "✗ Incorrect Final Answer";
-            feedbackEl.className = "feedback incorrect";
-            q.finalMark = 0;
-        }
-
-        document.getElementById(`user-ans-${index}`).disabled = true;
-        document.getElementById(`eval-btn-${index}`).style.display = 'block';
-        updateScore();
-
-        if (window.renderMathInElement) {
-            renderMathInElement(finalBox, { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
-        }
-    }
-
     function openEvaluation(index) {
-        document.getElementById(`eval-box-${index}`).style.display = 'block';
+        let box = document.getElementById(`eval-box-${index}`);
+        box.style.display = 'block';
         if (window.renderMathInElement) {
-            renderMathInElement(document.getElementById(`eval-box-${index}`), { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
+            renderMathInElement(box, { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
         }
     }
 
     function updateScore() {
         let total = 0;
         currentQuestions.forEach((q, index) => {
-            let score = q.finalMark || 0;
+            let score = 0;
             let stepCheckboxes = document.querySelectorAll(`.step-check-${index}`);
             stepCheckboxes.forEach(chk => {
                 if (chk.checked) score += 1;
@@ -341,96 +287,204 @@
 
     function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-    function generateBasicPoly() {
-        let a = randInt(2, 6);
-        let n = randInt(3, 5);
-        let c = randInt(1, 4);
-        return {
-            type: "Chain / Power Rule",
-            promptText: `Find the derivative of $f(x) = (${a}x^{${n}} - ${c})^{${n-1}}$`,
-            hintText: `e.g. ${n-1}(${a}x^${n}-${c})^${n-2} * ...`,
-            ans: `${n-1}*(${a}x^${n}-${c})^${n-2}*(${a*n}x^${n-1})`,
-            cleanAns: `${(n-1)*(a*n)}x^{${n-1}}(${a}x^{${n}} - ${c})^{${n-2}}`,
-            steps: [
-                `Recognize the need for the Generalized Power Rule (Chain Rule).`,
-                `Bring down the exponent (${n-1}) and subtract 1 from the outer power, keeping the inner term $(${a}x^{${n}} - ${c})$ intact.`,
-                `Find the derivative of the inner term: $\\frac{d}{dx}[${a}x^{${n}} - ${c}] = ${a*n}x^{${n-1}}$.`,
-                `Multiply the outer expression by the inner derivative and simplify.`
-            ],
-            finalMark: 0
-        };
+    function generateChainRule() {
+        const variants = [
+            () => {
+                let a = randInt(2, 5), n = randInt(3, 4), c = randInt(1, 5);
+                let outerExp = n - 1, innerExp = n - 2, innerDeriv = a * n, coeff = outerExp * innerDeriv;
+                return {
+                    type: "Chain Rule (Polynomial)",
+                    promptText: `Find the derivative of $f(x) = (${a}x^{${n}} - ${c})^{${outerExp}}$`,
+                    cleanAns: `${coeff}x^{${n-1}}(${a}x^{${n}} - ${c})^{${innerExp}}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left[(${a}x^{${n}} - ${c})^{${outerExp}}\\right]`,
+                        `${outerExp}(${a}x^{${n}} - ${c})^{${innerExp}} \\cdot \\frac{d}{dx}\\left(${a}x^{${n}} - ${c}\\right)`,
+                        `${outerExp}(${a}x^{${n}} - ${c})^{${innerExp}} \\cdot (${innerDeriv}x^{${n-1}})`,
+                        `${coeff}x^{${n-1}}(${a}x^{${n}} - ${c})^{${innerExp}}`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 4), b = randInt(1, 6), n = randInt(2, 4);
+                let outerExp = n, innerExp = n - 1;
+                return {
+                    type: "Chain Rule (Linear Power)",
+                    promptText: `Find the derivative of $f(x) = (${a}x + ${b})^{${n}}$`,
+                    cleanAns: `${a * n}(${a}x + ${b})^{${innerExp}}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left[(${a}x + ${b})^{${n}}\\right]`,
+                        `${n}(${a}x + ${b})^{${innerExp}} \\cdot \\frac{d}{dx}(${a}x + ${b})`,
+                        `${n}(${a}x + ${b})^{${innerExp}} \\cdot (${a})`,
+                        `${a * n}(${a}x + ${b})^{${innerExp}}`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 4), c = randInt(1, 4);
+                return {
+                    type: "Chain Rule (Quadratic Power)",
+                    promptText: `Find the derivative of $f(x) = (${a}x^2 + ${c})^3$`,
+                    cleanAns: `6x(${a}x^2 + ${c})^2`,
+                    steps: [
+                        `\\frac{d}{dx}\\left[(${a}x^2 + ${c})^3\\right]`,
+                        `3(${a}x^2 + ${c})^2 \\cdot \\frac{d}{dx}(${a}x^2 + ${c})`,
+                        `3(${a}x^2 + ${c})^2 \\cdot (${2*a}x)`,
+                        `${6*a}x(${a}x^2 + ${c})^2`
+                    ]
+                };
+            }
+        ];
+        return variants[randInt(0, variants.length - 1)]();
     }
 
     function generateExponential() {
-        let k = randInt(2, 5);
-        return {
-            type: "Exponential Rule",
-            promptText: `Differentiate $f(x) = e^{${k}x^2}$ with respect to $x$.`,
-            hintText: `e.g. ${2*k}x * e^(${k}x^2)`,
-            ans: `${2*k}x*e^(${k}x^2)`,
-            cleanAns: `${2*k}x \\cdot e^{${k}x^2}`,
-            steps: [
-                `Identify the exponential function pattern $f(x) = e^{u(x)}$.`,
-                `Recall the differentiation rule for natural exponentials: $\\frac{d}{dx}[e^u] = e^u \\cdot u'$.`,
-                `Identify the exponent function $u = ${k}x^2$ and compute its derivative $u' = ${2*k}x$.`,
-                `Assemble the final product: ${2*k}x \\cdot e^{${k}x^2}.`
-            ],
-            finalMark: 0
-        };
+        const variants = [
+            () => {
+                let k = randInt(2, 5), doubleK = 2 * k;
+                return {
+                    type: "Exponential Rule",
+                    promptText: `Differentiate $f(x) = e^{${k}x^2}$ with respect to $x$.`,
+                    cleanAns: `${doubleK}x \\cdot e^{${k}x^2}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(e^{${k}x^2}\\right)`,
+                        `e^{${k}x^2} \\cdot \\frac{d}{dx}\\left(${k}x^2\\right)`,
+                        `e^{${k}x^2} \\cdot (${doubleK}x)`,
+                        `${doubleK}x \\cdot e^{${k}x^2}`
+                    ]
+                };
+            },
+            () => {
+                let m = randInt(2, 6), b = randInt(1, 5);
+                return {
+                    type: "Exponential Rule (Linear Exponent)",
+                    promptText: `Differentiate $f(x) = e^{${m}x - ${b}}$ with respect to $x$.`,
+                    cleanAns: `${m}e^{${m}x - ${b}}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(e^{${m}x - ${b}}\\right)`,
+                        `e^{${m}x - ${b}} \\cdot \\frac{d}{dx}(${m}x - ${b})`,
+                        `e^{${m}x - ${b}} \\cdot (${m})`,
+                        `${m}e^{${m}x - ${b}}`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 4);
+                return {
+                    type: "Exponential Rule (Cubic Exponent)",
+                    promptText: `Differentiate $f(x) = e^{${a}x^3}$ with respect to $x$.`,
+                    cleanAns: `${3*a}x^2 e^{${a}x^3}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(e^{${a}x^3}\\right)`,
+                        `e^{${a}x^3} \\cdot \\frac{d}{dx}(${a}x^3)`,
+                        `e^{${a}x^3} \\cdot (${3*a}x^2)`,
+                        `${3*a}x^2 e^{${a}x^3}`
+                    ]
+                };
+            }
+        ];
+        return variants[randInt(0, variants.length - 1)]();
     }
 
     function generateLogarithmic() {
-        let a = randInt(2, 5);
-        return {
-            type: "Logarithmic Rule",
-            promptText: `Determine $f'(x)$ given $f(x) = \\ln(${a}x^3 + 1)$.`,
-            hintText: `e.g. (${3*a}x^2) / (${a}x^3 + 1)`,
-            ans: `[${3*a}x^2 / (${a}x^3 + 1)]`,
-            cleanAns: `\\frac{${3*a}x^2}{${a}x^3 + 1}`,
-            steps: [
-                `Identify the logarithmic function form $f(x) = \\ln(u)$.`,
-                `Recall the rule for logarithms: $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$.`,
-                `Set $u = ${a}x^3 + 1$ and find its derivative $u' = ${3*a}x^2$.`,
-                `Substitute values into the formula to get $\\frac{${3*a}x^2}{${a}x^3 + 1}$.`
-            ],
-            finalMark: 0
-        };
+        const variants = [
+            () => {
+                let a = randInt(2, 5), coeff = 3 * a;
+                return {
+                    type: "Logarithmic Rule",
+                    promptText: `Determine $f'(x)$ given $f(x) = \\ln(${a}x^3 + 1)$.`,
+                    cleanAns: `\\frac{${coeff}x^2}{${a}x^3 + 1}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(\\ln(${a}x^3 + 1)\\right)`,
+                        `\\frac{1}{${a}x^3 + 1} \\cdot \\frac{d}{dx}\\left(${a}x^3 + 1\\right)`,
+                        `\\frac{1}{${a}x^3 + 1} \\cdot (${coeff}x^2)`,
+                        `\\frac{${coeff}x^2}{${a}x^3 + 1}`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 5), b = randInt(2, 4);
+                return {
+                    type: "Logarithmic Rule (Power)",
+                    promptText: `Determine $f'(x)$ given $f(x) = \\ln(x^{${b}} + ${a})$.`,
+                    cleanAns: `\\frac{${b}x^{${b-1}}}{x^{${b}} + ${a}}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(\\ln(x^{${b}} + ${a})\\right)`,
+                        `\\frac{1}{x^{${b}} + ${a}} \\cdot \\frac{d}{dx}(x^{${b}} + ${a})`,
+                        `\\frac{1}{x^{${b}} + ${a}} \\cdot (${b}x^{${b-1}})`,
+                        `\\frac{${b}x^{${b-1}}}{x^{${b}} + ${a}}`
+                    ]
+                };
+            }
+        ];
+        return variants[randInt(0, variants.length - 1)]();
     }
 
     function generateProductRule() {
-        let a = randInt(2, 4);
-        return {
-            type: "Product Rule",
-            promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\cdot e^x$.`,
-            hintText: `e.g. x^${a}*e^x + ...`,
-            ans: `x^${a}*e^x + ${a}x^(${a}-1)*e^x`,
-            cleanAns: `x^{${a}}e^x + ${a}x^{${a-1}}e^x`,
-            steps: [
-                `Recognize two functions multiplied together, requiring the Product Rule: $(uv)' = u'v + uv'$.`,
-                `Define parts: let $u = x^{${a}}$ and $v = e^x$.`,
-                `Differentiate parts: $u' = ${a}x^{${a-1}}$ and $v' = e^x$.`,
-                `Combine using the product rule formula: $(${a}x^{${a-1}})e^x + x^{${a}}e^x$.`
-            ],
-            finalMark: 0
-        };
+        const variants = [
+            () => {
+                let a = randInt(2, 4), prevExp = a - 1;
+                return {
+                    type: "Product Rule (Polynomial & Exp)",
+                    promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\cdot e^x$.`,
+                    cleanAns: `x^{${a}}e^x + ${a}x^{${prevExp}}e^x`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(x^{${a}} \\cdot e^x\\right)`,
+                        `\\frac{d}{dx}(x^{${a}}) \\cdot e^x + x^{${a}} \\cdot \\frac{d}{dx}(e^x)`,
+                        `(${a}x^{${prevExp}})e^x + x^{${a}}(e^x)`,
+                        `x^{${a}}e^x + ${a}x^{${prevExp}}e^x`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 4);
+                return {
+                    type: "Product Rule (Algebraic & Natural Log)",
+                    promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\ln(x)$.`,
+                    cleanAns: `x^{${a-1}} + ${a}x^{${a-1}}\\ln(x)`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(x^{${a}} \\ln(x)\\right)`,
+                        `\\frac{d}{dx}(x^{${a}}) \\ln(x) + x^{${a}} \\cdot \\frac{d}{dx}(\\ln(x))`,
+                        `(${a}x^{${a-1}})\\ln(x) + x^{${a}} \\cdot \\left(\\frac{1}{x}\\right)`,
+                        `x^{${a-1}} + ${a}x^{${a-1}}\\ln(x)`
+                    ]
+                };
+            }
+        ];
+        return variants[randInt(0, variants.length - 1)]();
     }
 
     function generateQuotientRule() {
-        let a = randInt(2, 4);
-        return {
-            type: "Quotient Rule",
-            promptText: `Find the derivative of the function $f(x) = \\frac{e^x}{x^{${a}} + 1}$.`,
-            hintText: `e.g. [e^x(x^${a}+1) - ...] / (x^${a}+1)^2`,
-            ans: `[(e^x)*(x^${a}+1) - e^x*(${a}x^(${a}-1))] / (x^${a}+1)^2`,
-            cleanAns: `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${a-1}}e^x}{(x^{${a}} + 1)^2}`,
-            steps: [
-                `Identify a division structure, triggering the Quotient Rule: $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$.`,
-                `Define components: $u = e^x$ and $v = x^{${a}} + 1$.`,
-                `Compute individual derivatives: $u' = e^x$ and $v' = ${a}x^{${a-1}}$.`,
-                `Substitute into the numerator and square the denominator $(x^{${a}} + 1)^2$.`
-            ],
-            finalMark: 0
-        };
+        const variants = [
+            () => {
+                let a = randInt(2, 4), prevExp = a - 1;
+                return {
+                    type: "Quotient Rule",
+                    promptText: `Find the derivative of the function $f(x) = \\frac{e^x}{x^{${a}} + 1}$.`,
+                    cleanAns: `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${prevExp}}e^x}{(x^{${a}} + 1)^2}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(\\frac{e^x}{x^{${a}} + 1}\\right)`,
+                        `\\frac{\\frac{d}{dx}(e^x)(x^{${a}} + 1) - e^x \\frac{d}{dx}(x^{${a}} + 1)}{(x^{${a}} + 1)^2}`,
+                        `\\frac{e^x(x^{${a}} + 1) - e^x(${a}x^{${prevExp}})}{(x^{${a}} + 1)^2}`,
+                        `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${prevExp}}e^x}{(x^{${a}} + 1)^2}`
+                    ]
+                };
+            },
+            () => {
+                let a = randInt(2, 4);
+                return {
+                    type: "Quotient Rule (Polynomial ratio)",
+                    promptText: `Find the derivative of the function $f(x) = \\frac{x^{${a}}}{e^x}$.`,
+                    cleanAns: `\\frac{x^{${a-1}}(${a} - x)}{e^x}`,
+                    steps: [
+                        `\\frac{d}{dx}\\left(\\frac{x^{${a}}}{e^x}\\right)`,
+                        `\\frac{\\frac{d}{dx}(x^{${a}})e^x - x^{${a}}\\frac{d}{dx}(e^x)}{(e^x)^2}`,
+                        `\\frac{(${a}x^{${prevExp}})e^x - x^{${a}}e^x}{(e^x)^2}`,
+                        `\\frac{x^{${a-1}}(${a} - x)}{e^x}`
+                    ]
+                };
+            }
+        ];
+        return variants[randInt(0, variants.length - 1)]();
     }
 
     window.onload = generateQuestions;
