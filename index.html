@@ -1,514 +1,1078 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revision Practice for Differentiation</title>
-    <!-- KaTeX CSS for beautiful math rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <!-- KaTeX JS -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-
-    <style>
-        :root {
-            --bg-base: #030712;
-            --card-bg: rgba(17, 24, 39, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --accent: #ec4899;
-            --success: #10b981;
-            --error: #f43f5e;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            min-height: 100vh;
-            margin: 0;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        .bg-glow-1, .bg-glow-2, .bg-glow-3 {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: -1;
-            opacity: 0.35;
-        }
-        .bg-glow-1 { width: 450px; height: 450px; background: #4f46e5; top: -100px; left: -100px; }
-        .bg-glow-2 { width: 500px; height: 500px; background: #9333ea; bottom: -150px; right: -100px; }
-        .bg-glow-3 { width: 350px; height: 350px; background: #db2777; top: 40%; left: 30%; }
-
-        .container {
-            max-width: 820px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-        }
-
-        header { text-align: center; margin-bottom: 30px; }
-
-        h1 {
-            font-size: 2.2rem;
-            margin: 0 0 10px 0;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        .scope-box {
-            background: rgba(79, 70, 229, 0.1);
-            border: 1px solid rgba(79, 70, 229, 0.25);
-            border-left: 5px solid var(--primary);
-            padding: 14px 20px;
-            font-size: 0.95rem;
-            color: #cbd5e1;
-            border-radius: 0 14px 14px 0;
-            margin-bottom: 28px;
-            line-height: 1.5;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px -5px rgba(219, 39, 119, 0.5); }
-
-        .btn-small {
-            background: #374151;
-            color: white;
-            border: 1px solid var(--card-border);
-            padding: 10px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: background 0.2s;
-        }
-        .btn-small:hover { background: #4b5563; }
-        .btn-eval { background: #7c3aed; }
-        .btn-eval:hover { background: #6d28d9; }
-
-        .question-card {
-            background: rgba(31, 41, 55, 0.5);
-            border: 1px solid var(--card-border);
-            padding: 24px;
-            border-radius: 16px;
-            margin-top: 24px;
-        }
-
-        .question-title {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .badge {
-            background: rgba(236, 72, 153, 0.15);
-            color: #f472b6;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid rgba(236, 72, 153, 0.3);
-            text-transform: uppercase;
-        }
-
-        .math-expr { font-size: 1.35rem; margin: 15px 0; color: #ffffff; font-weight: 500; }
-
-        .eval-box {
-            margin-top: 15px;
-            padding: 16px;
-            border-radius: 10px;
-            display: none;
-            background: rgba(124, 58, 237, 0.1);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-        }
-
-        .step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 6px;
-        }
-        .step-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-top: 2px;
-            cursor: pointer;
-        }
-
-        #total-score-banner {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 14px;
-            color: #34d399;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculus Differentiation Practice Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- KaTeX for crisp LaTeX math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .katex-display {
+      margin: 0.3em 0 !important;
+      display: inline-block !important;
+    }
+    .drop-slot {
+      min-height: 52px;
+      transition: all 0.2s ease-in-out;
+    }
+    .drop-slot.drag-over {
+      border-color: #6366f1;
+      background-color: rgba(99, 102, 241, 0.2);
+      transform: scale(1.01);
+    }
+    .draggable-card {
+      cursor: grab;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .draggable-card:active {
+      cursor: grabbing;
+    }
+    .draggable-card.dragging {
+      opacity: 0.4;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
 
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
-    <div class="bg-glow-3"></div>
+  <header class="bg-slate-800/80 border-b border-slate-700/60 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-500/30">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Calculus Differentiation Practice</h1>
+          <p class="text-xs text-slate-400">Multiple-Choice & Interactive Side-by-Side Step Proofs</p>
+        </div>
+      </div>
+      <button onclick="resetQuiz()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-all">
+        🔄 Reset Quiz
+      </button>
+    </div>
+  </header>
 
-<div class="container">
-    <header>
-        <h1>Revision Practice for Differentiation</h1>
-        <p style="color: var(--text-muted); margin: 0;">Interactive Self-Evaluation Practice Engine</p>
-    </header>
+  <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 flex-grow flex flex-col justify-center">
 
-    <div class="scope-box">
-        <strong>Practice Scope:</strong> Core differentiation rules limited strictly to <strong>basic algebra, natural exponential, and natural log</strong>. Each question is worth <strong>5 marks total</strong> (1 mark per step across 4 calculation steps + 1 final answer check).
+    <!-- Progress Indicator -->
+    <div id="quiz-progress-container" class="mb-6 bg-slate-800/80 p-4 rounded-2xl border border-slate-700/50 shadow-xl">
+      <div class="flex justify-between items-center mb-2">
+        <span id="quiz-progress-text" class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Question 1 of 10</span>
+        <span id="quiz-category-badge" class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1. Basic Algebraic</span>
+      </div>
+      <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden">
+        <div id="quiz-progress-bar" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+      </div>
     </div>
 
-    <button class="btn" id="generate-btn">⚡ Generate Random Practice Set</button>
+    <!-- Active Question Card Container -->
+    <div id="quiz-card" class="bg-slate-800/80 rounded-2xl p-6 sm:p-8 border border-slate-700/50 shadow-2xl space-y-6">
+      
+      <!-- Section Tag & Question Box -->
+      <div>
+        <span id="question-number-tag" class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Part 1: Basic Algebraic Differentiation</span>
+        
+        <div class="bg-slate-900/80 rounded-xl border border-slate-700/50 p-5 sm:p-6 shadow-inner">
+          <div id="quiz-question-text" class="text-lg sm:text-xl font-normal text-slate-100 leading-relaxed">
+            <!-- Rendered cleanly via KaTeX -->
+          </div>
+        </div>
+      </div>
 
-    <div id="quiz-container"></div>
+      <!-- Multiple Choice Options Layout (Questions 1-3) -->
+      <div id="mcq-container" class="hidden space-y-3 max-w-3xl mx-auto">
+        <label class="block text-sm font-medium text-slate-300 mb-2">Select the correct derivative:</label>
+        <div id="mcq-options" class="grid grid-cols-1 gap-3">
+          <!-- Dynamically populated MCQ buttons -->
+        </div>
+      </div>
 
-    <div id="total-score-banner" style="display: none;">
-        Total Cumulative Score: <span id="grand-score">0</span> / 25 Marks
+      <!-- Side-by-Side Drag & Drop Layout (Questions 4-10) -->
+      <div id="dragdrop-container" class="hidden">
+        <div class="flex justify-between items-center mb-3">
+          <label class="block text-sm font-semibold text-indigo-300">Match each calculation step with its correct option from the side panel:</label>
+          <span class="text-xs text-slate-400 italic">Drag & drop or tap card to place</span>
+        </div>
+
+        <!-- 2-Column Side-by-Side Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Left/Main Column: Step Target Slots (7 cols) -->
+          <div class="lg:col-span-7 space-y-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block pb-1">
+              🎯 Target Step Slots
+            </span>
+            <div id="step-slots-container" class="space-y-3">
+              <!-- Dynamically populated target drop slots -->
+            </div>
+          </div>
+
+          <!-- Right Column: Available Options Bank (5 cols) -->
+          <div class="lg:col-span-5 bg-slate-900/90 p-4 rounded-xl border border-slate-700/80 shadow-inner space-y-3 sticky top-24">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span id="bank-step-title" class="text-xs font-bold uppercase tracking-wider text-indigo-400">
+                📦 Options for Step 1
+              </span>
+              <span id="bank-count-tag" class="text-[11px] text-indigo-400 font-mono">3 remaining</span>
+            </div>
+            <p class="text-xs text-slate-400">Select or drag the correct card to fill the active target slot.</p>
+            <div id="drag-options-bank" class="flex flex-col gap-2.5 min-h-[120px] max-h-[480px] overflow-y-auto pr-1">
+              <!-- Dynamically populated draggable options for current active step -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Feedback Banner -->
+      <div id="feedback-box" class="hidden p-4 rounded-xl text-sm font-medium transition-all leading-relaxed"></div>
+
+      <!-- Action Control Buttons -->
+      <div class="flex flex-wrap sm:flex-nowrap gap-3 pt-2">
+        <button id="submit-btn" onclick="checkAnswer()" class="w-full sm:w-1/2 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98]">
+          Submit Answer
+        </button>
+        <button id="next-btn" onclick="nextQuestion()" disabled class="w-full sm:w-1/2 py-3 bg-slate-800 border border-slate-700 text-slate-500 font-semibold rounded-xl transition-all cursor-not-allowed">
+          Next Question ➔
+        </button>
+      </div>
+
     </div>
-</div>
 
-<script>
-    let currentQuestions = [];
+    <!-- Quiz Results View -->
+    <div id="quiz-results" class="hidden bg-slate-800/80 rounded-2xl p-6 sm:p-8 border border-slate-700/50 shadow-2xl text-center space-y-6 max-w-3xl mx-auto">
+      <div class="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+        🎉
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white">Quiz Completed!</h2>
+      <p class="text-slate-300">You scored <span id="final-score" class="font-bold text-indigo-400 text-xl">0</span> out of <span id="total-questions" class="font-bold text-xl">10</span>.</p>
+      
+      <div id="answers-summary" class="text-left space-y-4 max-h-96 overflow-y-auto p-4 bg-slate-900/60 rounded-xl border border-slate-800 text-xs sm:text-sm"></div>
 
-    document.getElementById('generate-btn').addEventListener('click', generateQuestions);
+      <button onclick="resetQuiz()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Try Again</button>
+    </div>
 
-    function triggerMathRender(element) {
-        if (typeof renderMathInElement === 'function') {
-            renderMathInElement(element, {
-                delimiters: [
-                    {left: "$$", right: "$$", display: true},
-                    {left: "$", right: "$", display: false}
-                ],
-                throwOnError: false
-            });
-        } else {
-            // Fallback check if script takes a split second to load
-            setTimeout(() => {
-                if (typeof renderMathInElement === 'function') {
-                    renderMathInElement(element, {
-                        delimiters: [
-                            {left: "$$", right: "$$", display: true},
-                            {left: "$", right: "$", display: false}
-                        ],
-                        throwOnError: false
-                    });
-                }
-            }, 200);
+  </main>
+
+  <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <span>Calculus Differentiation Practice &bull; Interactive Learning</span>
+      <button onclick="downloadCode()" class="text-indigo-400 hover:text-indigo-300 underline font-medium">Download App Code</button>
+    </div>
+  </footer>
+
+  <script>
+    let currentQuizIndex = 0;
+    let score = 0;
+    let userAnswers = [];
+    let selectedMcqIndex = null;
+    let stepDropState = {}; // { stepIdx: optionObject }
+    let isCurrentAnswerSubmitted = false;
+    let draggedItemData = null;
+    let activeStepIdx = 0; // Tracks the current active step for progressive options display
+    let generatedQuestions = [];
+
+    function renderMath() {
+      if (window.renderMathInElement) {
+        window.renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // Utility helpers for random number generation
+    function randInt(min, max, excludeZero = true) {
+      let num = 0;
+      do {
+        num = Math.floor(Math.random() * (max - min + 1)) + min;
+      } while (excludeZero && num === 0);
+      return num;
+    }
+
+    function formatCoeff(c, isLeading = false) {
+      if (c === 1) return isLeading ? "" : " + ";
+      if (c === -1) return isLeading ? "-" : " - ";
+      if (c > 0) return isLeading ? `${c}` : ` + ${c}`;
+      return isLeading ? `${c}` : ` - ${Math.abs(c)}`;
+    }
+
+    function generateDynamicQuestions() {
+      // Q1: Dynamic polynomial f(x) = a*x^p1 + b*x^p2 + c*x + d
+      const a1 = randInt(2, 6), p1 = randInt(4, 6);
+      const b1 = randInt(-5, 5), p2 = randInt(2, 3);
+      const c1 = randInt(-8, 8), d1 = randInt(-15, 15);
+      const q1Ans = `${a1 * p1}x^{${p1 - 1}} ${b1 * p2 >= 0 ? '+' : ''}${b1 * p2}x${p2 - 1 > 1 ? '^{' + (p2 - 1) + '}' : ''} ${c1 >= 0 ? '+' : ''}${c1}`;
+      
+      // Q2: Dynamic fractional/radical y = a/x^p + b*sqrt(x)
+      const a2 = randInt(2, 8), p2_pow = randInt(2, 4);
+      const b2 = randInt(2, 6);
+      const q2Ans = `-\\frac{${a2 * p2_pow}}{x^{${p2_pow + 1}}} + \\frac{${b2 / 2 === 1 ? '' : b2 % 2 === 0 ? b2/2 : b2 + '/2'}}{\\sqrt{x}}`;
+
+      // Q3: Dynamic product expansion g(x) = a*x^p (b*x - c)
+      const a3 = randInt(2, 5), p3 = randInt(2, 3);
+      const b3 = randInt(2, 5), c3 = randInt(2, 6);
+      const expA = a3 * b3, expP = p3 + 1, expB = a3 * c3;
+      const q3Ans = `${expA * expP}x^{${expP - 1}} - ${expB * p3}x^{${p3 - 1 > 1 ? p3 - 1 : ''}}`;
+
+      // Q4: General Power Rule f(x) = (a*x^2 + b*x + c)^p
+      const a4 = randInt(2, 4), b4 = randInt(-5, 5), c4 = randInt(1, 6), p4 = randInt(3, 5);
+      const innerDeriv4 = `${2 * a4}x ${b4 >= 0 ? '+' : ''}${b4}`;
+
+      // Q5: Product Rule f(x) = (a*x + b)(c*x^2 - d)
+      const a5 = randInt(2, 4), b5 = randInt(1, 5);
+      const c5 = randInt(2, 4), d5 = randInt(2, 6);
+
+      // Q6: Quotient Rule y = (x^2 + a)/(b*x - c)
+      const a6 = randInt(2, 6), b6 = randInt(2, 4), c6 = randInt(1, 5);
+
+      // Q7: Radical Chain Rule h(x) = sqrt(a*x^3 + b*x)
+      const a7 = randInt(2, 5), b7 = randInt(2, 6);
+
+      // Q8: Exponential Chain Rule f(x) = e^(a*x^2 - b*x)
+      const a8 = randInt(2, 5), b8 = randInt(2, 6);
+
+      // Q9: Logarithmic Chain Rule y = ln(a*x^3 + b)
+      const a9 = randInt(2, 5), b9 = randInt(3, 9);
+
+      // Q10: Exp & Log Product y = e^(a*x) * ln(x)
+      const a10 = randInt(2, 5);
+
+      return [
+        {
+          type: "mcq",
+          section: "Part 1: Basic Algebraic Differentiation",
+          category: "1. Basic Algebraic",
+          question: `Find the derivative of $f(x) = ${a1}x^{${p1}} ${formatCoeff(b1)}x^{${p2}} ${formatCoeff(c1)}x ${formatCoeff(d1)}$ with respect to $x$.`,
+          options: shuffleArray([
+            `$${q1Ans}$`,
+            `$${a1 * p1}x^{${p1}} ${b1 * p2 >= 0 ? '+' : ''}${b1 * p2}x^{${p2}} ${c1 >= 0 ? '+' : ''}${c1}x$`,
+            `$${a1}x^{${p1 - 1}} ${b1 >= 0 ? '+' : ''}${b1}x^{${p2 - 1}} ${c1 >= 0 ? '+' : ''}${c1}$`,
+            `$${a1 * p1}x^{${p1 - 1}} ${b1 * p2 >= 0 ? '+' : ''}${b1 * p2}x^{${p2 - 1}} ${formatCoeff(d1)}$`
+          ]),
+          correctAnswerText: `$${q1Ans}$`,
+          explanation: `Apply the Power Rule term-by-term: $\\frac{d}{dx}[${a1}x^{${p1}}] = ${a1 * p1}x^{${p1 - 1}}$, $\\frac{d}{dx}[${b1}x^{${p2}}] = ${b1 * p2}x^{${p2 - 1 > 1 ? p2 - 1 : ''}}$, $\\frac{d}{dx}[${c1}x] = ${c1}$, and constant becomes $0$.`
+        },
+        {
+          type: "mcq",
+          section: "Part 1: Basic Algebraic Differentiation",
+          category: "1. Basic Algebraic",
+          question: `Find $\\frac{dy}{dx}$ for $y = \\frac{${a2}}{x^{${p2_pow}}} + ${b2}\\sqrt{x}$.`,
+          options: shuffleArray([
+            `$${q2Ans}$`,
+            `$-\\frac{${a2 * p2_pow}}{x^{${p2_pow - 1}}} + \\frac{${b2}}{2\\sqrt{x}}$`,
+            `$\\frac{${a2 * p2_pow}}{x^{${p2_pow + 1}}} + ${b2}\\sqrt{x}$`,
+            `$-\\frac{${a2}}{${p2_pow}x^{${p2_pow - 1}}} + \\frac{${b2}}{\\sqrt{x}}$`
+          ]),
+          correctAnswerText: `$${q2Ans}$`,
+          explanation: `Rewrite as $y = ${a2}x^{-${p2_pow}} + ${b2}x^{1/2}$. Differentiating yields $y' = -${a2 * p2_pow}x^{-${p2_pow + 1}} + \\frac{${b2}}{2}x^{-1/2} = ${q2Ans}$.`
+        },
+        {
+          type: "mcq",
+          section: "Part 1: Basic Algebraic Differentiation",
+          category: "1. Basic Algebraic",
+          question: `Differentiate $g(x) = ${a3}x^{${p3}}(${b3}x - ${c3})$ by expanding first.`,
+          options: shuffleArray([
+            `$${q3Ans}$`,
+            `$${expA}x^{${expP - 1}} - ${expB}x^{${p3 - 1}}$`,
+            `$${expA * expP}x^{${expP}} - ${expB * p3}x^{${p3}}$`,
+            `$${a3 * b3}x^{${p3 + 1}} - ${a3 * c3}x^{${p3}}$`
+          ]),
+          correctAnswerText: `$${q3Ans}$`,
+          explanation: `Expand to $g(x) = ${expA}x^{${expP}} - ${expB}x^{${p3}}$. Differentiating gives $g'(x) = ${q3Ans}$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 2: Differentiation Rules",
+          category: "2. General Power Rule",
+          question: `Differentiate $f(x) = (${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4}}$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Outer & Inner Functions",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = ${a4}x^2 ${formatCoeff(b4)}x + ${c4},\\quad y = u^{${p4}}$` },
+                { id: "s0_opt1", latex: `$u = ${a4}x^2,\\quad y = u^{${p4 - 1}}$` },
+                { id: "s0_opt2", latex: `$u = ${b4}x + ${c4},\\quad y = u^{${p4}}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Chain Rule Form",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$f'(x) = ${p4}(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4 - 1}} \\cdot \\frac{d}{dx}(${a4}x^2 ${formatCoeff(b4)}x + ${c4})$` },
+                { id: "s1_opt1", latex: `$f'(x) = ${p4}(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4}} \\cdot (${innerDeriv4})$` },
+                { id: "s1_opt2", latex: `$f'(x) = ${p4 - 1}(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4 - 1}} \\cdot (${2 * a4}x)$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Inner Derivative $\\frac{du}{dx}$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$\\frac{d}{dx}(${a4}x^2 ${formatCoeff(b4)}x + ${c4}) = ${innerDeriv4}$` },
+                { id: "s2_opt1", latex: `$\\frac{d}{dx}(${a4}x^2 ${formatCoeff(b4)}x + ${c4}) = ${2 * a4}x^2 ${formatCoeff(b4)}$` },
+                { id: "s2_opt2", latex: `$\\frac{d}{dx}(${a4}x^2 ${formatCoeff(b4)}x + ${c4}) = ${a4}x + ${b4}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 4: Final Derivative Expression",
+              correctId: "s3_opt0",
+              options: [
+                { id: "s3_opt0", latex: `$f'(x) = ${p4}(${innerDeriv4})(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4 - 1}}$` },
+                { id: "s3_opt1", latex: `$f'(x) = (${innerDeriv4})(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4 - 1}}$` },
+                { id: "s3_opt2", latex: `$f'(x) = ${p4}(${a4}x^2 ${formatCoeff(b4)}x + ${c4})^{${p4 - 1}}$` }
+              ]
+            }
+          ],
+          explanation: `By General Power Rule $\\frac{d}{dx}[u^n] = n u^{n-1} u'$, bring down exponent $${p4}$, keep inner polynomial, and multiply by inner derivative $(${innerDeriv4})$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 2: Differentiation Rules",
+          category: "2. Product Rule",
+          question: `Differentiate $f(x) = (${a5}x + ${b5})(${c5}x^2 - ${d5})$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Identify Product Terms",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = ${a5}x + ${b5},\\quad v = ${c5}x^2 - ${d5}$` },
+                { id: "s0_opt1", latex: `$u = ${a5}x,\\quad v = ${c5}x^2$` },
+                { id: "s0_opt2", latex: `$u = ${a5}x + ${b5},\\quad v = ${2 * c5}x$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Component Derivatives $u'$ and $v'$",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$u' = ${a5},\\quad v' = ${2 * c5}x$` },
+                { id: "s1_opt1", latex: `$u' = ${a5}x,\\quad v' = ${c5}x$` },
+                { id: "s1_opt2", latex: `$u' = 1,\\quad v' = ${2 * c5}x - ${d5}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Product Rule Formula $u'v + uv'$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$f'(x) = ${a5}(${c5}x^2 - ${d5}) + (${a5}x + ${b5})(${2 * c5}x)$` },
+                { id: "s2_opt1", latex: `$f'(x) = ${a5}(${2 * c5}x) + (${c5}x^2 - ${d5})(${b5})$` },
+                { id: "s2_opt2", latex: `$f'(x) = (${a5}x + ${b5})(${2 * c5}x) - ${a5}(${c5}x^2 - ${d5})$` }
+              ]
+            },
+            {
+              stepTitle: "Step 4: Expand and Combine",
+              correctId: "s3_opt0",
+              options: [
+                { id: "s3_opt0", latex: `$f'(x) = ${3 * a5 * c5}x^2 + ${2 * b5 * c5}x - ${a5 * d5}$` },
+                { id: "s3_opt1", latex: `$f'(x) = ${3 * a5 * c5}x^2 + ${2 * b5 * c5}x + ${a5 * d5}$` },
+                { id: "s3_opt2", latex: `$f'(x) = ${a5 * c5}x^2 + ${2 * b5 * c5}x - ${a5 * d5}$` }
+              ]
+            }
+          ],
+          explanation: `Product Rule states $\\frac{d}{dx}[uv] = u'v + uv'$. Expanding and simplifying yields $${3 * a5 * c5}x^2 + ${2 * b5 * c5}x - ${a5 * d5}$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 2: Differentiation Rules",
+          category: "2. Quotient Rule",
+          question: `Differentiate $y = \\frac{x^2 + ${a6}}{${b6}x - ${c6}}$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Identify Numerator & Denominator",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = x^2 + ${a6},\\quad v = ${b6}x - ${c6}$` },
+                { id: "s0_opt1", latex: `$u = ${b6}x - ${c6},\\quad v = x^2 + ${a6}$` },
+                { id: "s0_opt2", latex: `$u = x^2,\\quad v = ${b6}x$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Component Derivatives $u'$ and $v'$",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$u' = 2x,\\quad v' = ${b6}$` },
+                { id: "s1_opt1", latex: `$u' = 2x + ${a6},\\quad v' = ${b6}$` },
+                { id: "s1_opt2", latex: `$u' = x,\\quad v' = 1$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Quotient Rule Formula $\\frac{u'v - uv'}{v^2}$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$y' = \\frac{(2x)(${b6}x - ${c6}) - (x^2 + ${a6})(${b6})}{(${b6}x - ${c6})^2}$` },
+                { id: "s2_opt1", latex: `$y' = \\frac{(2x)(${b6}x - ${c6}) + (x^2 + ${a6})(${b6})}{(${b6}x - ${c6})^2}$` },
+                { id: "s2_opt2", latex: `$y' = \\frac{(x^2 + ${a6})(${b6}) - (2x)(${b6}x - ${c6})}{(${b6}x - ${c6})^2}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 4: Simplified Quotient",
+              correctId: "s3_opt0",
+              options: [
+                { id: "s3_opt0", latex: `$y' = \\frac{${b6}x^2 - ${2 * c6}x - ${a6 * b6}}{(${b6}x - ${c6})^2}$` },
+                { id: "s3_opt1", latex: `$y' = \\frac{${b6}x^2 - ${a6 * b6}}{(${b6}x - ${c6})^2}$` },
+                { id: "s3_opt2", latex: `$y' = \\frac{${3 * b6}x^2 - ${2 * c6}x - ${a6 * b6}}{(${b6}x - ${c6})^2}$` }
+              ]
+            }
+          ],
+          explanation: `Applying Quotient Rule $\\frac{u'v - uv'}{v^2}$ and expanding numerator gives $(${2*b6}x^2 - ${2*c6}x - ${b6}x^2 - ${a6*b6}) = \\frac{${b6}x^2 - ${2*c6}x - ${a6*b6}}{(${b6}x - ${c6})^2}$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 2: Differentiation Rules",
+          category: "2. General Power Rule",
+          question: `Differentiate $h(x) = \\sqrt{${a7}x^3 + ${b7}x}$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Exponent Notation",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$h(x) = (${a7}x^3 + ${b7}x)^{1/2}$` },
+                { id: "s0_opt1", latex: `$h(x) = (${a7}x^3 + ${b7}x)^{-1/2}$` },
+                { id: "s0_opt2", latex: `$h(x) = (${a7}x^3 + ${b7}x)^2$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Chain Rule Form",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$h'(x) = \\frac{1}{2}(${a7}x^3 + ${b7}x)^{-1/2} \\cdot \\frac{d}{dx}(${a7}x^3 + ${b7}x)$` },
+                { id: "s1_opt1", latex: `$h'(x) = \\frac{1}{2}(${a7}x^3 + ${b7}x)^{1/2} \\cdot (${3 * a7}x^2 + ${b7})$` },
+                { id: "s1_opt2", latex: `$h'(x) = -\\frac{1}{2}(${a7}x^3 + ${b7}x)^{-3/2} \\cdot (${3 * a7}x^2)$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Inner Derivative",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$\\frac{d}{dx}(${a7}x^3 + ${b7}x) = ${3 * a7}x^2 + ${b7}$` },
+                { id: "s2_opt1", latex: `$\\frac{d}{dx}(${a7}x^3 + ${b7}x) = ${3 * a7}x^2 + 1$` },
+                { id: "s2_opt2", latex: `$\\frac{d}{dx}(${a7}x^3 + ${b7}x) = ${a7}x^2 + ${b7}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 4: Radical Form Denominator",
+              correctId: "s3_opt0",
+              options: [
+                { id: "s3_opt0", latex: `$h'(x) = \\frac{${3 * a7}x^2 + ${b7}}{2\\sqrt{${a7}x^3 + ${b7}x}}$` },
+                { id: "s3_opt1", latex: `$h'(x) = \\frac{${3 * a7}x^2 + ${b7}}{\\sqrt{${a7}x^3 + ${b7}x}}$` },
+                { id: "s3_opt2", latex: `$h'(x) = \\frac{1}{2\\sqrt{${3 * a7}x^2 + ${b7}}}$` }
+              ]
+            }
+          ],
+          explanation: `Rewrite as power $1/2$, bring down $1/2$, and multiply by inner derivative $(${3 * a7}x^2 + ${b7})$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 3: Natural Exponential & Logarithmic Functions",
+          category: "3. Exponential Function",
+          question: `Differentiate $f(x) = e^{${a8}x^2 - ${b8}x}$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Exponent Function $u$",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = ${a8}x^2 - ${b8}x$` },
+                { id: "s0_opt1", latex: `$u = ${a8}x^2$` },
+                { id: "s0_opt2", latex: `$u = e^{${a8}x^2}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Exponent Derivative $u'$",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$u' = ${2 * a8}x - ${b8}$` },
+                { id: "s1_opt1", latex: `$u' = ${a8}x - ${b8}$` },
+                { id: "s1_opt2", latex: `$u' = ${2 * a8}x^2 - ${b8}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Exponential Rule $u' e^u$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$f'(x) = (${2 * a8}x - ${b8}) e^{${a8}x^2 - ${b8}x}$` },
+                { id: "s2_opt1", latex: `$f'(x) = (${2 * a8}x - ${b8}) e^{${2 * a8}x - ${b8}}$` },
+                { id: "s2_opt2", latex: `$f'(x) = e^{${2 * a8}x - ${b8}}$` }
+              ]
+            }
+          ],
+          explanation: `Using $\\frac{d}{dx}[e^u] = u' e^u$, derivative of exponent $u = ${a8}x^2 - ${b8}x$ is $u' = ${2 * a8}x - ${b8}$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 3: Natural Exponential & Logarithmic Functions",
+          category: "3. Logarithmic Function",
+          question: `Differentiate $y = \\ln(${a9}x^3 + ${b9})$ step-by-step.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Log Argument $u$",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = ${a9}x^3 + ${b9}$` },
+                { id: "s0_opt1", latex: `$u = ${a9}x^3$` },
+                { id: "s0_opt2", latex: `$u = \\ln(${a9}x^3)$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Argument Derivative $u'$",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$u' = ${3 * a9}x^2$` },
+                { id: "s1_opt1", latex: `$u' = ${3 * a9}x^3$` },
+                { id: "s1_opt2", latex: `$u' = ${a9}x^2$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Log Rule $\\frac{u'}{u}$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$y' = \\frac{${3 * a9}x^2}{${a9}x^3 + ${b9}}$` },
+                { id: "s2_opt1", latex: `$y' = \\frac{${a9}x^3 + ${b9}}{${3 * a9}x^2}$` },
+                { id: "s2_opt2", latex: `$y' = \\frac{1}{${a9}x^3 + ${b9}}$` }
+              ]
+            }
+          ],
+          explanation: `Using $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$, numerator is $u' = ${3 * a9}x^2$ and denominator is $u = ${a9}x^3 + ${b9}$.`
+        },
+        {
+          type: "step_by_step",
+          section: "Part 3: Natural Exponential & Logarithmic Functions",
+          category: "3. Exp & Log Product",
+          question: `Differentiate $y = e^{${a10}x} \\ln(x)$ step-by-step for $x > 0$.`,
+          steps: [
+            {
+              stepTitle: "Step 1: Product Components",
+              correctId: "s0_opt0",
+              options: [
+                { id: "s0_opt0", latex: `$u = e^{${a10}x},\\quad v = \\ln(x)$` },
+                { id: "s0_opt1", latex: `$u = ${a10}x,\\quad v = \\ln(x)$` },
+                { id: "s0_opt2", latex: `$u = e^{${a10}x},\\quad v = \\frac{1}{x}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 2: Component Derivatives $u'$ and $v'$",
+              correctId: "s1_opt0",
+              options: [
+                { id: "s1_opt0", latex: `$u' = ${a10}e^{${a10}x},\\quad v' = \\frac{1}{x}$` },
+                { id: "s1_opt1", latex: `$u' = e^{${a10}x},\\quad v' = \\frac{1}{x}$` },
+                { id: "s1_opt2", latex: `$u' = ${a10}e^{${a10}x},\\quad v' = \\ln(x)$` }
+              ]
+            },
+            {
+              stepTitle: "Step 3: Combine $u'v + uv'$",
+              correctId: "s2_opt0",
+              options: [
+                { id: "s2_opt0", latex: `$y' = ${a10}e^{${a10}x} \\ln(x) + \\frac{e^{${a10}x}}{x}$` },
+                { id: "s2_opt1", latex: `$y' = (${a10}e^{${a10}x})\\left(\\frac{1}{x}\\right) + (e^{${a10}x})(\\ln(x))$` },
+                { id: "s2_opt2", latex: `$y' = ${a10}e^{${a10}x} \\ln(x) + \\frac{${a10}e^{${a10}x}}{x}$` }
+              ]
+            },
+            {
+              stepTitle: "Step 4: Factor out $e^{${a10}x}$",
+              correctId: "s3_opt0",
+              options: [
+                { id: "s3_opt0", latex: `$y' = e^{${a10}x}\\left(${a10}\\ln(x) + \\frac{1}{x}\\right)$` },
+                { id: "s3_opt1", latex: `$y' = ${a10}e^{${a10}x}\\left(\\ln(x) + \\frac{1}{x}\\right)$` },
+                { id: "s3_opt2", latex: `$y' = e^{${a10}x}(\\ln(x) + ${a10})$` }
+              ]
+            }
+          ],
+          explanation: `Product rule gives $${a10}e^{${a10}x}\\ln(x) + e^{${a10}x}/x$. Factoring out $e^{${a10}x}$ gives $e^{${a10}x}(${a10}\\ln(x) + 1/x)$.`
         }
+      ];
     }
 
-    function generateQuestions() {
-        currentQuestions = [
-            generateChainRule(),
-            generateExponential(),
-            generateLogarithmic(),
-            generateProductRule(),
-            generateQuotientRule()
-        ];
+    function loadQuestion() {
+      const q = generatedQuestions[currentQuizIndex];
+      selectedMcqIndex = null;
+      stepDropState = {};
+      isCurrentAnswerSubmitted = false;
+      activeStepIdx = 0; // Reset active step focus to step 1
 
-        let html = '';
-        currentQuestions.forEach((q, index) => {
-            html += `
-                <div class="question-card" id="q-card-${index}">
-                    <div class="question-title">
-                        <span>Question ${index + 1} (5 Marks Total)</span>
-                        <span class="badge">${q.type}</span>
-                    </div>
-                    <div class="math-expr">${q.promptText}</div>
-                    
-                    <button class="btn-small btn-eval" id="eval-btn-${index}" onclick="openEvaluation(${index})">View Step-by-Step Working & Self-Evaluation</button>
+      // Update progress indicators
+      document.getElementById('quiz-progress-text').innerText = `Question ${currentQuizIndex + 1} of ${generatedQuestions.length}`;
+      document.getElementById('quiz-category-badge').innerText = q.category;
+      document.getElementById('question-number-tag').innerText = q.section;
+      document.getElementById('quiz-progress-bar').style.width = `${((currentQuizIndex + 1) / generatedQuestions.length) * 100}%`;
+      
+      document.getElementById('quiz-question-text').innerHTML = q.question;
 
-                    <div class="eval-box" id="eval-box-${index}">
-                        <h4 style="margin-top:0; color:#c084fc;">Self-Evaluation Checkboxes (1 Mark per correct step/answer):</h4>
-                        
-                        ${q.steps.map((stepText, sIdx) => `
-                            <div class="step-item">
-                                <input type="checkbox" class="step-check-${index}" id="step-${index}-${sIdx}" onchange="updateScore()">
-                                <div><label for="step-${index}-${sIdx}"><strong>Step ${sIdx+1}:</strong>$${stepText}$</label></div>
-                            </div>
-                        `).join('')}
+      // Reset feedback box and action buttons
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.classList.add('hidden');
 
-                        <div class="step-item" style="border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);">
-                            <input type="checkbox" class="step-check-${index}" id="step-${index}-4" onchange="updateScore()">
-                            <div><label for="step-${index}-4"><strong>Final Answer:</strong> $f'(x) = ${q.cleanAns}$</label></div>
-                        </div>
-                    </div>
-                </div>
-            `;
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = false;
+      submitBtn.className = "w-full sm:w-1/2 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98]";
+
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = true;
+      nextBtn.className = "w-full sm:w-1/2 py-3 bg-slate-800 border border-slate-700 text-slate-500 font-semibold rounded-xl transition-all cursor-not-allowed";
+
+      const mcqContainer = document.getElementById('mcq-container');
+      const dragdropContainer = document.getElementById('dragdrop-container');
+
+      if (q.type === 'mcq') {
+        mcqContainer.classList.remove('hidden');
+        dragdropContainer.classList.add('hidden');
+        renderMcqOptions(q);
+      } else {
+        mcqContainer.classList.add('hidden');
+        dragdropContainer.classList.remove('hidden');
+        renderDragDropArea(q);
+      }
+
+      renderMath();
+    }
+
+    function renderMcqOptions(q) {
+      const optionsContainer = document.getElementById('mcq-options');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/90 hover:border-indigo-500 hover:bg-slate-800 transition-all font-medium flex items-center gap-3";
+        btn.onclick = () => selectMcqOption(idx);
+        btn.id = `mcq-opt-${idx}`;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400 font-mono">${String.fromCharCode(65 + idx)}</span>
+          <span class="text-slate-200 text-sm sm:text-base">${optText}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectMcqOption(idx) {
+      if (isCurrentAnswerSubmitted) return;
+      const q = generatedQuestions[currentQuizIndex];
+      selectedMcqIndex = idx;
+      for (let i = 0; i < q.options.length; i++) {
+        const btn = document.getElementById(`mcq-opt-${i}`);
+        if (i === idx) {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-indigo-500 bg-indigo-950/40 font-medium flex items-center gap-3";
+        } else {
+          btn.className = "w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/90 hover:border-indigo-500 hover:bg-slate-800 transition-all font-medium flex items-center gap-3";
+        }
+      }
+    }
+
+    function renderDragDropArea(q) {
+      const slotsContainer = document.getElementById('step-slots-container');
+      slotsContainer.innerHTML = '';
+
+      // Render Drop Target Slots for each step on the left
+      q.steps.forEach((stepObj, stepIdx) => {
+        const isActive = (stepIdx === activeStepIdx);
+        const slotCard = document.createElement('div');
+        slotCard.className = `bg-slate-900/90 border ${isActive ? 'border-indigo-500/80 shadow-indigo-500/10 shadow-lg' : 'border-slate-700/80'} rounded-xl p-3.5 space-y-2 transition-all`;
+        slotCard.innerHTML = `
+          <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider ${isActive ? 'text-indigo-400' : 'text-slate-400'}">
+            <span>${stepObj.stepTitle}</span>
+            <span class="text-slate-500 font-normal lowercase italic text-[11px]">${isActive ? 'active step' : ''}</span>
+          </div>
+          <div id="drop-slot-${stepIdx}" 
+               ondragover="handleDragOver(event)" 
+               ondragleave="handleDragLeave(event)" 
+               ondrop="handleDrop(event, ${stepIdx})"
+               class="drop-slot border-2 border-dashed ${isActive ? 'border-indigo-500/60 bg-indigo-950/20' : 'border-slate-700 bg-slate-950/50'} rounded-lg p-2.5 flex items-center justify-center">
+            <span class="text-slate-500 text-xs italic pointer-events-none">Empty Target Slot ${stepIdx + 1}</span>
+          </div>
+        `;
+        slotsContainer.appendChild(slotCard);
+      });
+
+      // Render side option bank specifically for active step only
+      renderActiveStepBankOptions(q);
+    }
+
+    function renderActiveStepBankOptions(q) {
+      const bankContainer = document.getElementById('drag-options-bank');
+      bankContainer.innerHTML = '';
+
+      const bankTitle = document.getElementById('bank-step-title');
+      const countTag = document.getElementById('bank-count-tag');
+
+      if (activeStepIdx >= q.steps.length) {
+        bankTitle.innerText = "✓ ALL STEPS COMPLETED";
+        countTag.innerText = "0 remaining";
+        bankContainer.innerHTML = `
+          <div class="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-center text-xs font-medium">
+            ✓ All steps filled! Click "Submit Answer" to verify your sequence.
+          </div>
+        `;
+        return;
+      }
+
+      bankTitle.innerText = `📦 OPTIONS FOR STEP ${activeStepIdx + 1}`;
+
+      // Retrieve options ONLY for current active step
+      const currentStepObj = q.steps[activeStepIdx];
+      
+      // Shuffle options helper to prevent fixed correct position
+      const optionsForStep = shuffleArray([...currentStepObj.options]);
+
+      countTag.innerText = `${optionsForStep.length} available`;
+
+      optionsForStep.forEach(opt => {
+        const card = document.createElement('div');
+        card.id = `card-${opt.id}`;
+        card.draggable = !isCurrentAnswerSubmitted;
+        card.ondragstart = (e) => handleDragStart(e, opt);
+        card.ondragend = handleDragEnd;
+        card.onclick = () => placeOptionInSlot(opt, activeStepIdx);
+        card.className = "draggable-card p-3 rounded-lg border border-slate-700 bg-slate-800/90 hover:border-indigo-500 hover:bg-slate-700 text-xs font-medium transition-all shadow-md flex items-center justify-between gap-2";
+        
+        card.innerHTML = `
+          <span class="text-slate-100">${opt.latex}</span>
+          <span class="text-slate-500 hover:text-indigo-400 text-xs shrink-0 cursor-grab">⋮⋮</span>
+        `;
+        bankContainer.appendChild(card);
+      });
+
+      renderMath();
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function handleDragStart(e, optionObj) {
+      if (isCurrentAnswerSubmitted) return;
+      draggedItemData = optionObj;
+      e.dataTransfer.setData('text/plain', JSON.stringify(optionObj));
+      e.target.classList.add('dragging');
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+
+    function handleDragOver(e) {
+      if (isCurrentAnswerSubmitted) return;
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e, stepIdx) {
+      if (isCurrentAnswerSubmitted) return;
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+
+      let optData = draggedItemData;
+      if (!optData) {
+        try {
+          optData = JSON.parse(e.dataTransfer.getData('text/plain'));
+        } catch (err) {
+          return;
+        }
+      }
+
+      placeOptionInSlot(optData, stepIdx);
+    }
+
+    function placeOptionInSlot(optData, stepIdx) {
+      if (stepIdx !== activeStepIdx && !stepDropState[stepIdx]) return;
+
+      const q = generatedQuestions[currentQuizIndex];
+      stepDropState[stepIdx] = optData;
+
+      // Automatically advance active step to next unplaced step
+      if (activeStepIdx < q.steps.length && stepIdx === activeStepIdx) {
+        activeStepIdx++;
+      }
+
+      renderDragDropArea(q);
+    }
+
+    function renderDragDropArea(q) {
+      const slotsContainer = document.getElementById('step-slots-container');
+      slotsContainer.innerHTML = '';
+
+      // Render Drop Target Slots for each step on the left
+      q.steps.forEach((stepObj, stepIdx) => {
+        const isActive = (stepIdx === activeStepIdx);
+        const slotCard = document.createElement('div');
+        const isFilled = Boolean(stepDropState[stepIdx]);
+
+        // Feedback specific highlights on submission
+        let borderStyle = isActive ? 'border-indigo-500/80 shadow-indigo-500/10 shadow-lg' : 'border-slate-700/80';
+        let slotFeedbackBadge = '';
+
+        if (isCurrentAnswerSubmitted) {
+          const userPlacedObj = stepDropState[stepIdx];
+          const isStepCorrect = userPlacedObj && userPlacedObj.id === stepObj.correctId;
+
+          if (isStepCorrect) {
+            borderStyle = 'border-emerald-500/60 bg-emerald-950/20';
+            slotFeedbackBadge = `<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">✓ Correct</span>`;
+          } else {
+            borderStyle = 'border-rose-500/60 bg-rose-950/20';
+            slotFeedbackBadge = `<span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-semibold border border-rose-500/30">✕ Incorrect Step</span>`;
+          }
+        }
+
+        slotCard.className = `bg-slate-900/90 border ${borderStyle} rounded-xl p-3.5 space-y-2 transition-all`;
+        
+        slotCard.innerHTML = `
+          <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider ${isActive ? 'text-indigo-400' : 'text-slate-400'}">
+            <span>${stepObj.stepTitle}</span>
+            <div class="flex items-center gap-2">
+              ${slotFeedbackBadge}
+              <span class="text-slate-500 font-normal lowercase italic text-[11px]">${!isCurrentAnswerSubmitted ? (isFilled ? '✓ filled' : (isActive ? 'active step' : '')) : ''}</span>
+            </div>
+          </div>
+          <div id="drop-slot-${stepIdx}" 
+               ondragover="handleDragOver(event)" 
+               ondragleave="handleDragLeave(event)" 
+               ondrop="handleDrop(event, ${stepIdx})"
+               class="drop-slot border-2 border-dashed ${isFilled ? (isCurrentAnswerSubmitted ? (stepDropState[stepIdx].id === stepObj.correctId ? 'border-emerald-500 bg-emerald-950/40' : 'border-rose-500 bg-rose-950/40') : 'border-indigo-500 bg-indigo-950/40') : (isActive ? 'border-indigo-500/60 bg-indigo-950/20' : 'border-slate-700 bg-slate-950/50')} rounded-lg p-2.5 flex items-center justify-center">
+            ${isFilled 
+              ? `<div class="w-full flex items-center justify-between gap-2">
+                   <div class="flex flex-col gap-1 overflow-x-auto">
+                     <span class="text-slate-100 text-xs sm:text-sm font-medium">${stepDropState[stepIdx].latex}</span>
+                     ${isCurrentAnswerSubmitted && stepDropState[stepIdx].id !== stepObj.correctId 
+                       ? `<span class="text-xs text-rose-300 font-sans"><strong>Correct step should be:</strong> ${stepObj.options.find(o => o.id === stepObj.correctId).latex}</span>` 
+                       : ''}
+                   </div>
+                   ${!isCurrentAnswerSubmitted ? `<button onclick="removeFromSlot(${stepIdx})" class="text-slate-400 hover:text-rose-400 text-xs font-bold px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 shrink-0 transition-colors">✕ Clear</button>` : ''}
+                 </div>`
+              : `<span class="text-slate-500 text-xs italic pointer-events-none">Empty Target Slot ${stepIdx + 1}</span>`
+            }
+          </div>
+        `;
+        slotsContainer.appendChild(slotCard);
+      });
+
+      // Render side option bank specifically for active step only
+      renderActiveStepBankOptions(q);
+
+      // Trigger KaTeX rendering to convert LaTeX syntax into nicely formatted math formulas
+      renderMath();
+    }
+
+    function removeFromSlot(stepIdx) {
+      if (isCurrentAnswerSubmitted) return;
+      delete stepDropState[stepIdx];
+      
+      // Set active step focus to the cleared step if earlier
+      if (stepIdx < activeStepIdx) {
+        activeStepIdx = stepIdx;
+      }
+
+      const q = generatedQuestions[currentQuizIndex];
+      renderDragDropArea(q);
+    }
+
+    function checkAnswer() {
+      if (isCurrentAnswerSubmitted) return;
+
+      const q = generatedQuestions[currentQuizIndex];
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.classList.remove('hidden');
+
+      let isCorrect = false;
+
+      if (q.type === 'mcq') {
+        if (selectedMcqIndex === null) {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-amber-500/10 border border-amber-500/30 text-amber-300";
+          feedbackBox.innerHTML = "⚠️ Please select an option before submitting.";
+          return;
+        }
+
+        const selectedOptionText = q.options[selectedMcqIndex];
+        isCorrect = (selectedOptionText === q.correctAnswerText);
+
+        if (isCorrect) {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 space-y-1";
+          feedbackBox.innerHTML = `<div>✓ <strong>Correct!</strong> ${selectedOptionText} is correct.</div><div class="text-xs text-emerald-200/80 mt-1"><strong>Explanation:</strong> ${q.explanation}</div>`;
+          score++;
+        } else {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-rose-500/10 border border-rose-500/30 text-rose-300 space-y-1";
+          feedbackBox.innerHTML = `<div>✕ <strong>Incorrect.</strong> The correct answer is: ${q.correctAnswerText}</div><div class="text-xs text-rose-200/80 mt-1"><strong>Explanation:</strong> ${q.explanation}</div>`;
+        }
+
+        userAnswers.push({
+          question: q.question,
+          userAns: selectedOptionText,
+          correctAns: q.correctAnswerText,
+          explanation: q.explanation,
+          isCorrect: isCorrect
         });
 
-        const quizContainer = document.getElementById('quiz-container');
-        quizContainer.innerHTML = html;
-        document.getElementById('total-score-banner').style.display = 'block';
-        updateScore();
+      } else {
+        // Drag and drop validation for steps
+        const totalSteps = q.steps.length;
+        const placedCount = Object.keys(stepDropState).length;
 
-        triggerMathRender(quizContainer);
-    }
+        if (placedCount < totalSteps) {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-amber-500/10 border border-amber-500/30 text-amber-300";
+          feedbackBox.innerHTML = `⚠️ Please complete all ${totalSteps} target step slots before submitting.`;
+          return;
+        }
 
-    function openEvaluation(index) {
-        let box = document.getElementById(`eval-box-${index}`);
-        box.style.display = 'block';
-        triggerMathRender(box);
-    }
-
-    function updateScore() {
-        let total = 0;
-        currentQuestions.forEach((q, index) => {
-            let score = 0;
-            let stepCheckboxes = document.querySelectorAll(`.step-check-${index}`);
-            stepCheckboxes.forEach(chk => {
-                if (chk.checked) score += 1;
-            });
-            q.totalScore = score;
-            total += score;
+        let wrongStepIndices = [];
+        q.steps.forEach((stepObj, idx) => {
+          const userPlacedObj = stepDropState[idx];
+          if (!userPlacedObj || userPlacedObj.id !== stepObj.correctId) {
+            wrongStepIndices.push(idx + 1);
+          }
         });
-        document.getElementById('grand-score').innerText = total;
+
+        isCorrect = (wrongStepIndices.length === 0);
+
+        if (isCorrect) {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 space-y-1";
+          feedbackBox.innerHTML = `<div>✓ <strong>Perfect Proof Sequence!</strong> All step cards match correctly.</div><div class="text-xs text-emerald-200/80 mt-1"><strong>Explanation:</strong> ${q.explanation}</div>`;
+          score++;
+        } else {
+          feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-rose-500/10 border border-rose-500/30 text-rose-300 space-y-1";
+          feedbackBox.innerHTML = `<div>✕ <strong>Incorrect Sequence.</strong> You picked the wrong choice for <strong>Step(s) ${wrongStepIndices.join(', ')}</strong>. Check the red cards on the left for corrections.</div><div class="text-xs text-rose-200/80 mt-1"><strong>Explanation:</strong> ${q.explanation}</div>`;
+        }
+
+        userAnswers.push({
+          question: q.question,
+          userAns: isCorrect ? "All steps correctly placed" : `Incorrect placement on Step(s) ${wrongStepIndices.join(', ')}`,
+          correctAns: "Correct order for each calculation step",
+          explanation: q.explanation,
+          isCorrect: isCorrect
+        });
+      }
+
+      // Mark answer submitted and update button states
+      isCurrentAnswerSubmitted = true;
+      
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.className = "w-full sm:w-1/2 py-3 bg-slate-800 border border-slate-700 text-slate-500 font-semibold rounded-xl transition-all cursor-not-allowed";
+
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = false;
+      nextBtn.className = "w-full sm:w-1/2 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98]";
+
+      // Re-render side-by-side view to highlight exact wrong step slots
+      if (q.type === 'step_by_step') {
+        renderDragDropArea(q);
+      }
+
+      renderMath();
     }
 
-    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function nextQuestion() {
+      if (!isCurrentAnswerSubmitted) return;
 
-    function generateChainRule() {
-        const variants = [
-            () => {
-                let a = randInt(2, 7), n = randInt(3, 5), c = randInt(1, 9);
-                let outerExp = n - 1, innerExp = n - 2, innerDeriv = a * n, coeff = outerExp * innerDeriv;
-                return {
-                    type: "Chain Rule (Polynomial)",
-                    promptText: `Find the derivative of $f(x) = (${a}x^{${n}} - ${c})^{${outerExp}}$`,
-                    cleanAns: `${coeff}x^{${n-1}}(${a}x^{${n}} - ${c})^{${innerExp}}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left[(${a}x^{${n}} - ${c})^{${outerExp}}\\right]`,
-                        `${outerExp}(${a}x^{${n}} - ${c})^{${innerExp}} \\cdot \\frac{d}{dx}\\left(${a}x^{${n}} - ${c}\\right)`,
-                        `${outerExp}(${a}x^{${n}} - ${c})^{${innerExp}} \\cdot (${innerDeriv}x^{${n-1}})`,
-                        `${coeff}x^{${n-1}}(${a}x^{${n}} - ${c})^{${innerExp}}`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 6), b = randInt(1, 9), n = randInt(2, 5);
-                let outerExp = n, innerExp = n - 1;
-                return {
-                    type: "Chain Rule (Linear Power)",
-                    promptText: `Find the derivative of $f(x) = (${a}x + ${b})^{${n}}$`,
-                    cleanAns: `${a * n}(${a}x + ${b})^{${innerExp}}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left[(${a}x + ${b})^{${n}}\\right]`,
-                        `${n}(${a}x + ${b})^{${innerExp}} \\cdot \\frac{d}{dx}(${a}x + ${b})`,
-                        `${n}(${a}x + ${b})^{${innerExp}} \\cdot (${a})`,
-                        `${a * n}(${a}x + ${b})^{${innerExp}}`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 6), c = randInt(1, 9), n = randInt(2, 4);
-                let outerExp = n, innerExp = n - 1, derivCoeff = a * 2 * n;
-                return {
-                    type: "Chain Rule (Quadratic Power)",
-                    promptText: `Find the derivative of $f(x) = (${a}x^2 + ${c})^{${n}}$`,
-                    cleanAns: `${derivCoeff}x(${a}x^2 + ${c})^{${innerExp}}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left[(${a}x^2 + ${c})^{${n}}\\right]`,
-                        `${n}(${a}x^2 + ${c})^{${innerExp}} \\cdot \\frac{d}{dx}(${a}x^2 + ${c})`,
-                        `${n}(${a}x^2 + ${c})^{${innerExp}} \\cdot (${2*a}x)`,
-                        `${derivCoeff}x(${a}x^2 + ${c})^{${innerExp}}`
-                    ]
-                };
-            }
-        ];
-        return variants[randInt(0, variants.length - 1)]();
+      currentQuizIndex++;
+      if (currentQuizIndex < generatedQuestions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
     }
 
-    function generateExponential() {
-        const variants = [
-            () => {
-                let k = randInt(2, 7), doubleK = 2 * k;
-                return {
-                    type: "Exponential Rule",
-                    promptText: `Differentiate $f(x) = e^{${k}x^2}$ with respect to $x$.`,
-                    cleanAns: `${doubleK}x \\cdot e^{${k}x^2}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(e^{${k}x^2}\\right)`,
-                        `e^{${k}x^2} \\cdot \\frac{d}{dx}\\left(${k}x^2\\right)`,
-                        `e^{${k}x^2} \\cdot (${doubleK}x)`,
-                        `${doubleK}x \\cdot e^{${k}x^2}`
-                    ]
-                };
-            },
-            () => {
-                let m = randInt(2, 8), b = randInt(1, 9);
-                return {
-                    type: "Exponential Rule (Linear Exponent)",
-                    promptText: `Differentiate $f(x) = e^{${m}x - ${b}}$ with respect to $x$.`,
-                    cleanAns: `${m}e^{${m}x - ${b}}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(e^{${m}x - ${b}}\\right)`,
-                        `e^{${m}x - ${b}} \\cdot \\frac{d}{dx}(${m}x - ${b})`,
-                        `e^{${m}x - ${b}} \\cdot (${m})`,
-                        `${m}e^{${m}x - ${b}}`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 6), tripleA = 3 * a;
-                return {
-                    type: "Exponential Rule (Cubic Exponent)",
-                    promptText: `Differentiate $f(x) = e^{${a}x^3}$ with respect to $x$.`,
-                    cleanAns: `${tripleA}x^2 e^{${a}x^3}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(e^{${a}x^3}\\right)`,
-                        `e^{${a}x^3} \\cdot \\frac{d}{dx}(${a}x^3)`,
-                        `e^{${a}x^3} \\cdot (${tripleA}x^2)`,
-                        `${tripleA}x^2 e^{${a}x^3}`
-                    ]
-                };
-            }
-        ];
-        return variants[randInt(0, variants.length - 1)]();
+    function showResults() {
+      document.getElementById('quiz-card').classList.add('hidden');
+      document.getElementById('quiz-progress-container').classList.add('hidden');
+      
+      const resultsView = document.getElementById('quiz-results');
+      resultsView.classList.remove('hidden');
+      
+      const total = generatedQuestions.length;
+      document.getElementById('final-score').innerText = score;
+      document.getElementById('total-questions').innerText = total;
+
+      const percentage = Math.round((score / total) * 100);
+      let feedbackTitle = "";
+      let feedbackMsg = "";
+      let feedbackColor = "";
+
+      if (percentage === 100) {
+        feedbackTitle = "🌟 Outstanding Mastery!";
+        feedbackMsg = "You demonstrated excellent knowledge across basic derivatives, general power rules, product/quotient rules, as well as exponential and logarithmic functions!";
+        feedbackColor = "bg-emerald-500/10 border-emerald-500/30 text-emerald-300";
+      } else if (percentage >= 70) {
+        feedbackTitle = "👍 Great Job!";
+        feedbackMsg = "You have a solid grasp of core differentiation rules. Review the specific steps missed below to perfect your step-by-step calculus proofs.";
+        feedbackColor = "bg-indigo-500/10 border-indigo-500/30 text-indigo-300";
+      } else if (percentage >= 50) {
+        feedbackTitle = "📚 Good Effort - Room for Improvement";
+        feedbackMsg = "You understand several basic rules, but complicated chain rules or product/quotient simplifications need extra practice.";
+        feedbackColor = "bg-amber-500/10 border-amber-500/30 text-amber-300";
+      } else {
+        feedbackTitle = "💪 Keep Practicing!";
+        feedbackMsg = "Don't worry! Differentiation requires step-by-step practice. Review the step breakdowns below and hit 'Try Again' to attempt fresh dynamic problems.";
+        feedbackColor = "bg-rose-500/10 border-rose-500/30 text-rose-300";
+      }
+
+      const summary = document.getElementById('answers-summary');
+      summary.innerHTML = `
+        <div class="p-4 rounded-xl border ${feedbackColor} space-y-1 mb-4 text-left">
+          <h3 class="font-bold text-base">${feedbackTitle} (${percentage}%)</h3>
+          <p class="text-xs leading-relaxed opacity-90">${feedbackMsg}</p>
+        </div>
+      ` + userAnswers.map((item, idx) => `
+        <div class="p-4 bg-slate-800/90 rounded-xl border border-slate-700/80 space-y-2">
+          <div class="flex justify-between items-center border-b border-slate-700/50 pb-2">
+            <span class="text-indigo-400 font-semibold text-xs uppercase tracking-wider">Question ${idx + 1}</span>
+            <span class="${item.isCorrect ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded text-xs border font-medium">
+              ${item.isCorrect ? '✓ Correct' : '✕ Needs Review'}
+            </span>
+          </div>
+          <p class="font-medium text-slate-200">${item.question}</p>
+          <div class="text-xs space-y-1">
+            <p class="text-slate-300"><strong>Your Answer:</strong> ${item.userAns}</p>
+            ${!item.isCorrect ? `<p class="text-emerald-300"><strong>Target Sequence:</strong> ${item.correctAns}</p>` : ''}
+            <p class="text-slate-400 italic pt-1"><strong>Explanation:</strong> ${item.explanation}</p>
+          </div>
+        </div>
+      `).join('');
+
+      renderMath();
     }
 
-    function generateLogarithmic() {
-        const variants = [
-            () => {
-                let a = randInt(2, 6), n = 3, coeff = n * a;
-                return {
-                    type: "Logarithmic Rule",
-                    promptText: `Determine $f'(x)$ given $f(x) = \\ln(${a}x^{${n}} + 1)$.`,
-                    cleanAns: `\\frac{${coeff}x^{${n-1}}}{${a}x^{${n}} + 1}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(\\ln(${a}x^{${n}} + 1)\\right)`,
-                        `\\frac{1}{${a}x^{${n}} + 1} \\cdot \\frac{d}{dx}\\left(${a}x^{${n}} + 1\\right)`,
-                        `\\frac{1}{${a}x^{${n}} + 1} \\cdot (${coeff}x^{${n-1}})`,
-                        `\\frac{${coeff}x^{${n-1}}}{${a}x^{${n}} + 1}`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 7), b = randInt(2, 5);
-                return {
-                    type: "Logarithmic Rule (Power)",
-                    promptText: `Determine $f'(x)$ given $f(x) = \\ln(x^{${b}} + ${a})$.`,
-                    cleanAns: `\\frac{${b}x^{${b-1}}}{x^{${b}} + ${a}}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(\\ln(x^{${b}} + ${a})\\right)`,
-                        `\\frac{1}{x^{${b}} + ${a}} \\cdot \\frac{d}{dx}(x^{${b}} + ${a})`,
-                        `\\frac{1}{x^{${b}} + ${a}} \\cdot (${b}x^{${b-1}})`,
-                        `\\frac{${b}x^{${b-1}}}{x^{${b}} + ${a}}`
-                    ]
-                };
-            }
-        ];
-        return variants[randInt(0, variants.length - 1)]();
+    function resetQuiz() {
+      currentQuizIndex = 0;
+      score = 0;
+      userAnswers = [];
+      generatedQuestions = generateDynamicQuestions(); // Regenerate fresh new values on reset
+      document.getElementById('quiz-card').classList.remove('hidden');
+      document.getElementById('quiz-progress-container').classList.remove('hidden');
+      document.getElementById('quiz-results').classList.add('hidden');
+      loadQuestion();
     }
 
-    function generateProductRule() {
-        const variants = [
-            () => {
-                let a = randInt(2, 6), prevExp = a - 1;
-                return {
-                    type: "Product Rule (Polynomial & Exp)",
-                    promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\cdot e^x$.`,
-                    cleanAns: `x^{${a}}e^x + ${a}x^{${prevExp}}e^x`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(x^{${a}} \\cdot e^x\\right)`,
-                        `\\frac{d}{dx}(x^{${a}}) \\cdot e^x + x^{${a}} \\cdot \\frac{d}{dx}(e^x)`,
-                        `(${a}x^{${prevExp}})e^x + x^{${a}}(e^x)`,
-                        `x^{${a}}e^x + ${a}x^{${prevExp}}e^x`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 6);
-                return {
-                    type: "Product Rule (Algebraic & Natural Log)",
-                    promptText: `Evaluate the derivative of $f(x) = x^{${a}} \\ln(x)$.`,
-                    cleanAns: `x^{${a-1}} + ${a}x^{${a-1}}\\ln(x)`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(x^{${a}} \\ln(x)\\right)`,
-                        `\\frac{d}{dx}(x^{${a}}) \\ln(x) + x^{${a}} \\cdot \\frac{d}{dx}(\\ln(x))`,
-                        `(${a}x^{${a-1}})\\ln(x) + x^{${a}} \\cdot \\left(\\frac{1}{x}\\right)`,
-                        `x^{${a-1}} + ${a}x^{${a-1}}\\ln(x)`
-                    ]
-                };
-            }
-        ];
-        return variants[randInt(0, variants.length - 1)]();
+    function downloadCode() {
+      const htmlContent = document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "differentiation_practice_app.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
-    function generateQuotientRule() {
-        const variants = [
-            () => {
-                let a = randInt(2, 5), prevExp = a - 1;
-                return {
-                    type: "Quotient Rule",
-                    promptText: `Find the derivative of the function $f(x) = \\frac{e^x}{x^{${a}} + 1}$.`,
-                    cleanAns: `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${prevExp}}e^x}{(x^{${a}} + 1)^2}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(\\frac{e^x}{x^{${a}} + 1}\\right)`,
-                        `\\frac{\\frac{d}{dx}(e^x)(x^{${a}} + 1) - e^x \\frac{d}{dx}(x^{${a}} + 1)}{(x^{${a}} + 1)^2}`,
-                        `\\frac{e^x(x^{${a}} + 1) - e^x(${a}x^{${prevExp}})}{(x^{${a}} + 1)^2}`,
-                        `\\frac{e^x(x^{${a}} + 1) - ${a}x^{${prevExp}}e^x}{(x^{${a}} + 1)^2}`
-                    ]
-                };
-            },
-            () => {
-                let a = randInt(2, 5), prevExp = a - 1;
-                return {
-                    type: "Quotient Rule (Polynomial ratio)",
-                    promptText: `Find the derivative of the function $f(x) = \\frac{x^{${a}}}{e^x}$.`,
-                    cleanAns: `\\frac{x^{${prevExp}}(${a} - x)}{e^x}`,
-                    steps: [
-                        `\\frac{d}{dx}\\left(\\frac{x^{${a}}}{e^x}\\right)`,
-                        `\\frac{\\frac{d}{dx}(x^{${a}})e^x - x^{${a}}\\frac{d}{dx}(e^x)}{(e^x)^2}`,
-                        `\\frac{(${a}x^{${prevExp}})e^x - x^{${a}}e^x}{(e^x)^2}`,
-                        `\\frac{x^{${prevExp}}(${a} - x)}{e^x}`
-                    ]
-                };
-            }
-        ];
-        return variants[randInt(0, variants.length - 1)]();
-    }
-
-    window.onload = generateQuestions;
-</script>
-
+    window.onload = function() {
+      generatedQuestions = generateDynamicQuestions();
+      loadQuestion();
+    };
+  </script>
 </body>
 </html>
